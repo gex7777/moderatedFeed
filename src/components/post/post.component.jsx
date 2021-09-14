@@ -10,12 +10,13 @@ import CardHeader from "@mui/material/CardHeader";
 
 export const Post = ({ author, date, text }) => {
   return (
-    <Card sx={{ minWidth: "40%", maxWidth: "40%", marginBottom: "2rem" }}>
+    <Card sx={{ minWidth: 400, maxWidth: 800, marginBottom: "2rem" }}>
       <CardHeader
         avatar={<Avatar>R</Avatar>}
         title={author || "mewow"}
         subheader={date || "date September 14, 2016"}
       />
+
       <CardContent>
         <Typography>
           {text ||

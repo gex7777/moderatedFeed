@@ -39,15 +39,18 @@ export default function DbProvider({ children }) {
   };
 
   const getPosts = async () => {
-    const querySnapshot = await getDocs(
-      collection(db, "users", currentUser.uid, "posts")
+    const q = query(
+      collection(db, "users", currentUser.uid, "posts"),
+      where("uid", "==", currentUser.uid)
     );
+    const querySnapshot = await getDocs(q);
 
     let dbdata = [];
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       dbdata = [...dbdata, { id: doc.id, data: doc.data() }];
     });
+
     return dbdata;
   };
 
@@ -62,10 +65,7 @@ export default function DbProvider({ children }) {
 
   const getApprovedPosts = async () => {
     let dbdata = [];
-    const q = query(
-      collectionGroup(db, "posts"),
-      where("approved", "==", true)
-    );
+    const q = query(collection(db, "approvedposts"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       dbdata = [...dbdata, { id: doc.id, data: doc.data() }];
@@ -85,6 +85,12 @@ export default function DbProvider({ children }) {
     await updateDoc(doc(db, "users", uid, "posts", id), {
       approved: !currentValue,
     });
+    const docRef = doc(db, "users", uid, "posts", id);
+    const docSnap = await getDoc(docRef);
+
+    currentValue
+      ? await deleteDoc(doc(db, "approvedposts", id))
+      : await setDoc(doc(db, "approvedposts", id), docSnap.data());
   };
   const value = {
     approveAPost,

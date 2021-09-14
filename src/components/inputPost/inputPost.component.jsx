@@ -15,7 +15,7 @@ const ParentContainer = styled.div`
 `;
 export const InputPost = () => {
   const { currentUser } = useAuth();
-  const { addPost, getAllPosts } = useDatabase();
+  const { addPost, getApprovedPosts } = useDatabase();
   const [value, setValue] = useState("");
 
   const handleChange = (event) => {
@@ -30,7 +30,7 @@ export const InputPost = () => {
       text: value,
     });
 
-    await getAllPosts();
+    await getApprovedPosts();
     setValue("");
   };
 
